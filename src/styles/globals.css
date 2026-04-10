@@ -1,0 +1,138 @@
+/* System fonts used — no external font loading for lower memory */
+@import "tailwindcss";
+
+@theme {
+  /* Premium Studio Light Theme */
+  --color-bg-primary: #ffffff;
+  --color-bg-subtle: #fcfcfd;
+  --color-bg-glass: rgba(255, 255, 255, 0.75);
+  --color-bg-glass-heavy: rgba(255, 255, 255, 0.92);
+  
+  /* Brand & Accents */
+  --color-brand-primary: #1a1a1a;
+  --color-brand-blue: #3b82f6;
+  --color-brand-indigo: #6366f1;
+  --color-brand-pink: #f472b6;
+  
+  /* Status */
+  --color-success: #10b981;
+  --color-error: #ef4444;
+  --color-warning: #f59e0b;
+
+  /* Typography */
+  --color-text-title: #111827;
+  --color-text-main: #374151;
+  --color-text-secondary: #6b7280;
+  --color-text-muted: #9ca3af;
+
+  /* Spacing */
+  --spacing-safe-area: 32px;
+  --spacing-inner: 24px;
+  --spacing-gap: 20px;
+  
+  /* Effects */
+  --radius-xl: 12px;
+  --radius-lg: 8px;
+  --radius-md: 6px;
+  
+  --shadow-premium: 0 4px 6px -1px rgba(0, 0, 0, 0.05); /* Simplified for lower GPU usage */
+  --shadow-floating: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  --shadow-border: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+  --shadow-glass-border: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+
+  /* Colors for CSS Variables */
+  --color-border: #e2e8f0;
+  --color-input: #e2e8f0;
+  --color-ring: var(--color-brand-blue);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+    @apply m-0 p-0 box-border;
+  }
+  
+  html, body, #root {
+    @apply h-full w-full overflow-hidden;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  body {
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    color: var(--color-text-main);
+    background-color: var(--color-bg-primary);
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.011em;
+  }
+}
+
+/* Custom Utilities */
+@layer utilities {
+  .fluid-bg {
+    background-color: #f8fafc;
+    background-size: 100% 100%;
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    /* box-shadow removed for CPU rendering performance */
+  }
+
+  .glass-pill {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    /* box-shadow removed for CPU rendering performance */
+  }
+
+  .btn-premium {
+    @apply transition-all duration-300 active:scale-95 cursor-pointer;
+    transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .no-drag {
+    -webkit-user-drag: none;
+    user-select: none;
+  }
+}
+
+@keyframes fluid-mesh {
+  0% { background-position: 0% 0%; }
+  50% { background-position: 100% 100%; }
+  100% { background-position: 0% 0%; }
+}
+
+@keyframes wave {
+  0% { transform: scaleY(0.7); }
+  100% { transform: scaleY(1); }
+}
+
+.animate-wave {
+  animation: wave 0.5s ease-in-out infinite alternate;
+  transform-origin: bottom;
+}
+
+/* Scrollbar refinement */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.cubic-bezier-spring {
+  transition-timing-function: cubic-bezier(0.16, 1.25, 0.3, 1);
+}
+
+
