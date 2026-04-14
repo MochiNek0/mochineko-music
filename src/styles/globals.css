@@ -110,6 +110,7 @@
 .animate-wave {
   animation: wave 0.5s ease-in-out infinite alternate;
   transform-origin: bottom;
+  will-change: transform;
 }
 
 /* Scrollbar refinement */

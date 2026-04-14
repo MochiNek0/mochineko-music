@@ -6,6 +6,7 @@ import { PlayerBar } from './components/player/PlayerBar';
 import { OnlineSearch } from './components/playlist/OnlineSearch';
 import { usePlayerStore } from './stores/playerStore';
 import { listen } from '@tauri-apps/api/event';
+import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
 
 type ViewType = 'library' | 'online';
 
@@ -18,9 +19,22 @@ function App() {
     playNext,
     playPrevious,
     setPlaybackMode,
+    setIsVisible,
   } = usePlayerStore();
 
   useEffect(() => {
+    const appWindow = getCurrentWebviewWindow();
+    
+    // 监听窗口焦点变化，作为可见性的主要参考
+    const unlistenFocus = appWindow.onFocusChanged(({ payload: focused }) => {
+      setIsVisible(focused);
+    });
+
+    // 监听标准的可见性变化（Web标准）
+    const handleVisibilityChange = () => {
+      setIsVisible(document.visibilityState === 'visible');
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
     const unlistenPlayPause = listen('tray-play-pause', () => {
       if (usePlayerStore.getState().isPlaying) {
         pause();
@@ -46,6 +60,8 @@ function App() {
       unlistenPrev.then((fn) => fn());
       unlistenNext.then((fn) => fn());
       unlistenMode.then((fn) => fn());
+      unlistenFocus.then((fn) => fn());
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
 

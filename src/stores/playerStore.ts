@@ -16,8 +16,10 @@ interface PlayerStore {
   queue: MusicItem[];
   queueIndex: number;
   audio: HTMLAudioElement | null;
+  isVisible: boolean;
 
   initAudio: () => void;
+  setIsVisible: (visible: boolean) => void;
   play: (song?: MusicItem) => Promise<void>;
   playOnlineMusic: (
     onlineSong: OnlineMusic,
@@ -47,6 +49,7 @@ export const usePlayerStore = create<PlayerStore>()(
       queue: [],
       queueIndex: -1,
       audio: null,
+      isVisible: true,
 
       initAudio: () => {
         if (get().audio) return;
@@ -68,7 +71,9 @@ export const usePlayerStore = create<PlayerStore>()(
         }
 
         audio.addEventListener("timeupdate", () => {
-          set({ position: Math.floor(audio.currentTime * 1000) });
+          if (get().isVisible) {
+            set({ position: Math.floor(audio.currentTime * 1000) });
+          }
         });
 
         audio.addEventListener("loadedmetadata", () => {
@@ -88,6 +93,16 @@ export const usePlayerStore = create<PlayerStore>()(
         });
 
         set({ audio });
+      },
+
+      setIsVisible: (visible: boolean) => {
+        set({ isVisible: visible });
+        if (visible) {
+          const { audio } = get();
+          if (audio) {
+            set({ position: Math.floor(audio.currentTime * 1000) });
+          }
+        }
       },
 
       play: async (song?: MusicItem) => {
