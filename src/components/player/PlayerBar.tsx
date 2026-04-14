@@ -31,19 +31,10 @@ const SongInfo = memo(
     return (
       <div className="flex items-center gap-4 overflow-hidden">
         <div className="relative w-14 h-14 rounded-2xl bg-white border border-black/5 flex items-center justify-center shrink-0 group cursor-pointer overflow-hidden">
-          {isPlaying ? (
-            <div className="flex items-center gap-[3px] h-5">
-              {[...Array(3)].map((_, i) => (
-                <div
-                  key={i}
-                  className="w-[3px] bg-brand-primary rounded-full animate-wave will-change-transform"
-                  style={{ animationDelay: `${i * 0.15}s`, height: "14px" }}
-                />
-              ))}
-            </div>
-          ) : (
-            <Disc3 size={24} className="text-text-muted/30" />
-          )}
+          <Disc3
+            size={24}
+            className={`${isPlaying ? "text-brand-primary" : "text-text-muted/30"}`}
+          />
         </div>
         <div className="flex flex-col min-w-0 pr-4">
           <h4 className="text-[15px] font-bold text-text-title truncate tracking-tight">

@@ -72,7 +72,7 @@ function App() {
 
       {/* Middle Layer: Main Content Card */}
       <div className="flex-1 flex overflow-hidden px-10 pb-6 pt-2 gap-8 z-10 min-h-0">
-        <div className="flex-1 flex overflow-hidden glass-card rounded-xl relative group transition-all duration-700 cubic-bezier-spring">
+        <div className="flex-1 flex overflow-hidden glass-card rounded-xl relative group">
           {/* Sidebar Area */}
           <Sidebar
             currentView={currentView}
