@@ -12,6 +12,7 @@
   "app": {
     "windows": [
       {
+        "label": "main",
         "title": "MochiNekoMusic",
         "additionalBrowserArgs": "--disable-gpu --disable-gpu-shader-disk-cache --disable-features=msSmartScreenProtection --disable-accelerated-2d-canvas --disable-gpu-memory-buffer-video-frames --disable-gpu-compositing --renderer-process-limit=1 --js-flags=--max-old-space-size=64",
         "width": 1200,

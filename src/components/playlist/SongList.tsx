@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { MusicItem } from '../../types';
 import { useLibraryStore } from '../../stores/libraryStore';
 import { usePlayerStore } from '../../stores/playerStore';
 import { useShallow } from 'zustand/react/shallow';
@@ -36,21 +37,24 @@ export function SongList() {
     loadCacheInfo();
   }, []);
 
+  const sourceSongs = useMemo(() => {
+    return selectedLibraryId === null ? allSongs : songs;
+  }, [songs, allSongs, selectedLibraryId]);
+
   const displaySongs = useMemo(() => {
     if (!searchQuery.trim()) {
-      return selectedLibraryId === null ? allSongs : songs;
+      return sourceSongs;
     }
 
     const query = searchQuery.toLowerCase();
-    const source = selectedLibraryId === null ? allSongs : songs;
-
-    return source.filter(
+    
+    return sourceSongs.filter(
       (song) =>
         song.title.toLowerCase().includes(query) ||
         song.artist.toLowerCase().includes(query) ||
         song.album.toLowerCase().includes(query)
     );
-  }, [searchQuery, songs, allSongs, selectedLibraryId]);
+  }, [searchQuery, sourceSongs]);
 
   const ROW_HEIGHT = 76;
   const VISIBLE_COUNT = 16;
@@ -74,7 +78,7 @@ export function SongList() {
     return `${minutes}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const handlePlaySong = (song: (typeof displaySongs)[0], index: number) => {
+  const handlePlaySong = (song: MusicItem) => {
     if (currentSong?.id === song.id) {
       if (isPlaying) {
         pause();
@@ -82,8 +86,10 @@ export function SongList() {
         play();
       }
     } else {
-      setQueue(displaySongs, index);
-      playSongAtIndex(index);
+      const index = sourceSongs.findIndex(s => s.id === song.id);
+      const playIndex = index !== -1 ? index : 0;
+      setQueue(sourceSongs, playIndex);
+      playSongAtIndex(playIndex);
     }
   };
 
@@ -181,7 +187,7 @@ export function SongList() {
                   <ContextMenu.Root key={song.id}>
                     <ContextMenu.Trigger asChild>
                       <tr 
-                        onClick={() => handlePlaySong(song, index)}
+                        onClick={() => handlePlaySong(song)}
                         className={cn(
                           "group cursor-pointer transition-all duration-300",
                           isCurrent ? "bg-brand-primary/5" : "hover:bg-black/1"
@@ -249,7 +255,7 @@ export function SongList() {
                       <ContextMenu.Content className="min-w-[180px] bg-white border border-black/5 rounded-xl py-2 animate-in fade-in zoom-in-95 duration-200 z-1000">
                         <ContextMenu.Item 
                           className="flex items-center gap-3 px-4 py-2 text-[12px] font-bold text-text-main hover:bg-black/5 cursor-pointer outline-none transition-colors mx-1 rounded-lg"
-                          onClick={() => handlePlaySong(song, index)}
+                          onClick={() => handlePlaySong(song)}
                         >
                           <Play size={14} className="text-brand-primary fill-brand-primary" />
                           立即播放

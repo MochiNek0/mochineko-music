@@ -11,10 +11,14 @@ import {
   Volume2,
   VolumeX,
   Disc3,
+  Captions,
+  ListVideo,
 } from "lucide-react";
 import { useEffect, useState, memo } from "react";
+import { clsx } from "clsx";
 import { useLibraryStore } from "../../stores/libraryStore";
 import { Slider } from "../common/Slider";
+import { useLyricsStore } from "../../stores/lyricsStore";
 
 // --- Helpers ---
 const formatTime = (ms: number) => {
@@ -108,7 +112,7 @@ const PlaybackModeControl = memo(
           return { icon: <Shuffle size={20} />, label: "随机播放" };
         case "Sequential":
           return {
-            icon: <SkipForward size={20} className="rotate-90" />,
+            icon: <ListVideo size={20} />,
             label: "顺序播放",
           };
         default:
@@ -293,6 +297,19 @@ export function PlayerBar() {
         />
 
         <div className="flex items-center justify-end gap-6">
+          <button
+            onClick={() => useLyricsStore.getState().toggleVisibility()}
+            className={clsx(
+              "p-2 rounded-xl transition-all btn-premium cursor-pointer",
+              useLyricsStore((state) => state.isVisible)
+                ? "text-brand-primary bg-brand-primary/10"
+                : "text-text-muted hover:text-brand-primary hover:bg-brand-primary/5",
+            )}
+            title="歌词"
+          >
+            <Captions size={20} />
+          </button>
+          <div className="h-10 w-px bg-black/5 mx-1" />
           <PlaybackModeControl
             mode={playbackMode}
             onCycle={cyclePlaybackMode}

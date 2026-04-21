@@ -6,7 +6,7 @@ import { PlayerBar } from './components/player/PlayerBar';
 import { OnlineSearch } from './components/playlist/OnlineSearch';
 import { usePlayerStore } from './stores/playerStore';
 import { listen } from '@tauri-apps/api/event';
-import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
+import { useLyricsStore } from './stores/lyricsStore';
 
 type ViewType = 'library' | 'online';
 
@@ -19,22 +19,9 @@ function App() {
     playNext,
     playPrevious,
     setPlaybackMode,
-    setIsVisible,
   } = usePlayerStore();
 
-  useEffect(() => {
-    const appWindow = getCurrentWebviewWindow();
-    
-    // 监听窗口焦点变化，作为可见性的主要参考
-    const unlistenFocus = appWindow.onFocusChanged(({ payload: focused }) => {
-      setIsVisible(focused);
-    });
-
-    // 监听标准的可见性变化（Web标准）
-    const handleVisibilityChange = () => {
-      setIsVisible(document.visibilityState === 'visible');
-    };
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+  useEffect(() => {    
     const unlistenPlayPause = listen('tray-play-pause', () => {
       if (usePlayerStore.getState().isPlaying) {
         pause();
@@ -56,14 +43,27 @@ function App() {
     });
 
     return () => {
-      unlistenPlayPause.then((fn) => fn());
-      unlistenPrev.then((fn) => fn());
-      unlistenNext.then((fn) => fn());
-      unlistenMode.then((fn) => fn());
-      unlistenFocus.then((fn) => fn());
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      unlistenPlayPause.then((fn: any) => fn());
+      unlistenPrev.then((fn: any) => fn());
+      unlistenNext.then((fn: any) => fn());
+      unlistenMode.then((fn: any) => fn());
     };
   }, []);
+
+  // Lyrics syncing component logic
+  const currentSong = usePlayerStore((state) => state.currentSong);
+  const position = usePlayerStore((state) => state.position);
+  const { loadLyrics, updateCurrentIndex } = useLyricsStore();
+
+  useEffect(() => {
+    if (currentSong) {
+      loadLyrics(currentSong.title, currentSong.artist, currentSong.duration_ms);
+    }
+  }, [currentSong?.id]);
+
+  useEffect(() => {
+    updateCurrentIndex(position);
+  }, [position]);
 
   return (
     <div className="h-full w-full fluid-bg flex flex-col overflow-hidden relative">

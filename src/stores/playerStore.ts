@@ -71,9 +71,7 @@ export const usePlayerStore = create<PlayerStore>()(
         }
 
         audio.addEventListener("timeupdate", () => {
-          if (get().isVisible) {
-            set({ position: Math.floor(audio.currentTime * 1000) });
-          }
+          set({ position: Math.floor(audio.currentTime * 1000) });
         });
 
         audio.addEventListener("loadedmetadata", () => {

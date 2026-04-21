@@ -1,6 +1,8 @@
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { Minus, Square, X, Maximize2 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useLyricsStore } from "../../stores/lyricsStore";
+import { InlineLyrics } from "../player/InlineLyrics";
 
 export function TitleBar() {
   const [isMaximized, setIsMaximized] = useState(false);
@@ -67,10 +69,16 @@ export function TitleBar() {
         </div>
       </div>
 
-      {/* Status Bar */}
-      <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2.5 text-[10px] text-text-muted font-bold uppercase tracking-[0.18em]">
-        <div className="w-1.5 h-1.5 rounded-full bg-success/60" />
-        <span className="opacity-80">系统就绪</span>
+      {/* Status Bar / Inline Lyrics */}
+      <div className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center w-1/3 min-w-[200px] h-full pointer-events-none">
+        {useLyricsStore((state) => state.isVisible) ? (
+          <InlineLyrics />
+        ) : (
+          <div className="flex items-center gap-2.5 text-[10px] text-text-muted font-bold uppercase tracking-[0.18em]">
+            <div className="w-1.5 h-1.5 rounded-full bg-success/60" />
+            <span className="opacity-80">系统就绪</span>
+          </div>
+        )}
       </div>
 
       {/* Window Controls */}
